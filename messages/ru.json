@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "title": "MoodMagnet",
+    "description": "Уделите минуту, чтобы прислушаться к себе"
+  },
+  "heading": "Как ты себя чувствуешь?",
+  "subtitle": "Уделите минуту, чтобы прислушаться к себе",
+  "saveMood": "Сохранить настроение",
+  "sections": {
+    "mindState": "Состояние ума",
+    "moodColor": "Цвет настроения",
+    "energyLevel": "Уровень энергии",
+    "bodySensation": "Ощущения тела",
+    "socialDesire": "Социальные желания",
+    "timePerception": "Восприятие времени",
+    "emotionalWeather": "Эмоциональная погода"
+  },
+  "energy": {
+    "drained": "Опустошён",
+    "wired": "На подъёме"
+  },
+  "mindStates": {
+    "confused": "Запутан",
+    "calm": "Спокоен",
+    "empty": "Пустой",
+    "noisy": "Шумный"
+  },
+  "bodySensations": {
+    "heavy": "Тяжёлый",
+    "light": "Лёгкий",
+    "tense": "Напряжён",
+    "restless": "Беспокойный"
+  },
+  "socialDesires": {
+    "isolated": "Изолирован",
+    "cozyAlone": "Один в уюте",
+    "open": "Открыт",
+    "cravingConnection": "Жажду общения"
+  },
+  "timePerceptions": {
+    "stuck": "Застрял",
+    "slow": "Медленно",
+    "flowing": "В потоке",
+    "rushing": "Спешу"
+  },
+  "emotionalWeathers": {
+    "stormy": "Штормит",
+    "cloudy": "Облачно",
+    "clearing": "Прояснение",
+    "sunny": "Солнечно"
+  },
+  "moodColors": {
+    "pink": "Розовый",
+    "teal": "Бирюзовый",
+    "coral": "Коралловый",
+    "rose": "Малиновый",
+    "amber": "Янтарный",
+    "purple": "Фиолетовый",
+    "blue": "Синий",
+    "green": "Зелёный"
+  }
+}

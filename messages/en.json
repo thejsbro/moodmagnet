@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "title": "MoodMagnet",
+    "description": "Take a moment to check in with yourself"
+  },
+  "heading": "How are you feeling?",
+  "subtitle": "Take a moment to check in with yourself",
+  "saveMood": "Save my mood",
+  "sections": {
+    "mindState": "Mind State",
+    "moodColor": "Mood Color",
+    "energyLevel": "Energy Level",
+    "bodySensation": "Body Sensation",
+    "socialDesire": "Social Desire",
+    "timePerception": "Time Perception",
+    "emotionalWeather": "Emotional Weather"
+  },
+  "energy": {
+    "drained": "Drained",
+    "wired": "Wired"
+  },
+  "mindStates": {
+    "confused": "Confused",
+    "calm": "Calm",
+    "empty": "Empty",
+    "noisy": "Noisy"
+  },
+  "bodySensations": {
+    "heavy": "Heavy",
+    "light": "Light",
+    "tense": "Tense",
+    "restless": "Restless"
+  },
+  "socialDesires": {
+    "isolated": "Isolated",
+    "cozyAlone": "Cozy-alone",
+    "open": "Open",
+    "cravingConnection": "Craving connection"
+  },
+  "timePerceptions": {
+    "stuck": "Stuck",
+    "slow": "Slow",
+    "flowing": "Flowing",
+    "rushing": "Rushing"
+  },
+  "emotionalWeathers": {
+    "stormy": "Stormy",
+    "cloudy": "Cloudy",
+    "clearing": "Clearing",
+    "sunny": "Sunny"
+  },
+  "moodColors": {
+    "pink": "Pink",
+    "teal": "Teal",
+    "coral": "Coral",
+    "rose": "Rose",
+    "amber": "Amber",
+    "purple": "Purple",
+    "blue": "Blue",
+    "green": "Green"
+  }
+}
