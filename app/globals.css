@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #1a1a1a;
-  --foreground: #ffffff;
+  --background: #d8d8d8;
+  --foreground: #111111;
 }
 
 @theme inline {
@@ -20,13 +20,14 @@ body {
 
 /* Energy level slider */
 .energy-slider {
+  touch-action: none;
   height: 8px;
   background: linear-gradient(
     to right,
     var(--active-color) 0%,
     var(--active-color) var(--fill-pct),
-    #3a3a3a var(--fill-pct),
-    #3a3a3a 100%
+    #b8b8b8 var(--fill-pct),
+    #b8b8b8 100%
   );
 }
 

@@ -35,8 +35,8 @@ const COLOR_POSITIONS: { key: string; x: number; y: number }[] = [
   { key: "pink",   x: 90,  y: 0   },
   { key: "teal",   x: 35,  y: 30  },
   { key: "coral",  x: 145, y: 30  },
-  { key: "rose",   x: 10,  y: 85  },
-  { key: "amber",  x: 170, y: 85  },
+  { key: "rose",   x: 0,  y: 85  },
+  { key: "amber",  x: 180, y: 85  },
   { key: "purple", x: 35,  y: 140 },
   { key: "blue",   x: 90,  y: 160 },
   { key: "green",  x: 145, y: 140 },
@@ -56,7 +56,7 @@ function toGrid<T>(items: T[]): [T, T | undefined][] {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mb-3 text-xs font-semibold tracking-widest text-zinc-500 uppercase">
+    <p className="mb-3 text-xs font-semibold tracking-widest text-zinc-400 uppercase">
       {children}
     </p>
   );
@@ -74,10 +74,10 @@ function ToggleButton({
   return (
     <button
       onClick={onClick}
-      className={`flex-1 rounded-full border py-3 text-sm font-semibold transition-colors ${
+      className={`flex-1 rounded-full border py-3 text-sm font-semibold transition-all ${
         selected
-          ? "border-white bg-white text-black"
-          : "border-zinc-700 bg-transparent text-white hover:border-zinc-500"
+          ? "border-transparent bg-zinc-800 text-white shadow-md"
+          : "border-transparent bg-white text-zinc-700 shadow-sm hover:shadow-md"
       }`}
     >
       {label}
@@ -91,7 +91,7 @@ function ToggleGrid({
   onToggle,
 }: {
   options: { key: string; label: string }[];
-  selected: string[];
+  selected: string | null;
   onToggle: (v: string) => void;
 }) {
   return (
@@ -100,13 +100,13 @@ function ToggleGrid({
         <div key={a.key} className="flex gap-2">
           <ToggleButton
             label={a.label}
-            selected={selected.includes(a.key)}
+            selected={selected === a.key}
             onClick={() => onToggle(a.key)}
           />
           {b && (
             <ToggleButton
               label={b.label}
-              selected={selected.includes(b.key)}
+              selected={selected === b.key}
               onClick={() => onToggle(b.key)}
             />
           )}
@@ -121,18 +121,19 @@ function ToggleGrid({
 export default function Home() {
   const t = useTranslations();
 
-  const [mindStates, setMindStates]               = useState<string[]>([]);
+  const [topic, setTopic]                         = useState<string>("");
+  const [mindState, setMindState]                 = useState<string | null>(null);
   const [moodColor, setMoodColor]                 = useState<string>("pink");
   const [energyLevel, setEnergyLevel]             = useState<number>(50);
-  const [bodySensations, setBodySensations]       = useState<string[]>([]);
-  const [socialDesires, setSocialDesires]         = useState<string[]>([]);
-  const [timePerceptions, setTimePerceptions]     = useState<string[]>([]);
-  const [emotionalWeathers, setEmotionalWeathers] = useState<string[]>([]);
+  const [bodySensation, setBodySensation]         = useState<string | null>(null);
+  const [socialDesire, setSocialDesire]           = useState<string | null>(null);
+  const [timePerception, setTimePerception]       = useState<string | null>(null);
+  const [emotionalWeather, setEmotionalWeather]   = useState<string | null>(null);
 
   const activeColor = MOOD_COLORS.find((c) => c.key === moodColor)?.hex ?? "#E8365D";
 
-  function toggle(arr: string[], setArr: (v: string[]) => void, value: string) {
-    setArr(arr.includes(value) ? arr.filter((v) => v !== value) : [...arr, value]);
+  function select(current: string | null, set: (v: string | null) => void, value: string) {
+    set(current === value ? null : value);
   }
 
   const mindStateOptions = MIND_STATE_KEYS.map((key) => ({
@@ -157,12 +158,33 @@ export default function Home() {
   }));
 
   return (
-    <div className="min-h-screen bg-[#1a1a1a] text-white">
-      <div className="mx-auto max-w-[400px] px-6 pb-28 pt-12">
+    <div className="relative min-h-screen bg-[#d8d8d8] text-zinc-900 overflow-hidden">
+      {/* Decorative background circles */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -top-24 -left-24 h-72 w-72 rounded-full bg-[#E8365D] opacity-30 blur-2xl shadow-2xl" />
+        <div className="absolute top-1/4 -right-20 h-60 w-60 rounded-full bg-[#5B9BD5] opacity-25 blur-2xl shadow-2xl" />
+        <div className="absolute top-1/2 -left-16 h-52 w-52 rounded-full bg-[#F0C040] opacity-20 blur-2xl shadow-2xl" />
+        <div className="absolute bottom-40 -right-16 h-64 w-64 rounded-full bg-[#3DBFA0] opacity-25 blur-2xl shadow-2xl" />
+        <div className="absolute -bottom-20 left-1/4 h-56 w-56 rounded-full bg-[#9B59B6] opacity-20 blur-2xl shadow-2xl" />
+      </div>
+      <div className="relative mx-auto max-w-[400px] px-6 pb-28 pt-12">
+        {/* Topic */}
+        <section className="mb-8">
+          <SectionLabel>{t("topic.label")}</SectionLabel>
+          <textarea
+            value={topic}
+            onChange={(e) => setTopic(e.target.value.slice(0, 322))}
+            placeholder={t("topic.placeholder")}
+            rows={4}
+            className="w-full resize-none rounded-2xl border border-transparent bg-white px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 shadow-sm focus:border-zinc-300 focus:outline-none focus:shadow-md transition-shadow"
+          />
+          <p className="mt-1 text-right text-xs text-zinc-400">{topic.length}/322</p>
+        </section>
+
         {/* Header */}
         <div className="mb-8 text-center">
           <h1 className="mb-2 text-2xl font-bold">{t("heading")}</h1>
-          <p className="text-sm text-zinc-400">{t("subtitle")}</p>
+          <p className="text-sm text-zinc-500">{t("subtitle")}</p>
         </div>
 
         {/* Mind State */}
@@ -170,8 +192,8 @@ export default function Home() {
           <SectionLabel>{t("sections.mindState")}</SectionLabel>
           <ToggleGrid
             options={mindStateOptions}
-            selected={mindStates}
-            onToggle={(v) => toggle(mindStates, setMindStates, v)}
+            selected={mindState}
+            onToggle={(v) => select(mindState, setMindState, v)}
           />
         </section>
 
@@ -195,8 +217,7 @@ export default function Home() {
                       width: isSelected ? 48 : 38,
                       height: isSelected ? 48 : 38,
                       backgroundColor: color.hex,
-                      outline: isSelected ? `3px solid white` : "none",
-                      outlineOffset: 2,
+                      boxShadow: isSelected ? `0 8px 24px 4px ${color.hex}99` : "none",
                     }}
                   >
                     {isSelected && (
@@ -206,7 +227,7 @@ export default function Home() {
                     )}
                   </div>
                   {!isSelected && (
-                    <span className="text-[14px] text-zinc-400">
+                    <span className="text-[14px] text-zinc-500">
                       {t(`moodColors.${key}`)}
                     </span>
                   )}
@@ -236,7 +257,7 @@ export default function Home() {
               } as React.CSSProperties
             }
           />
-          <div className="mt-1 flex justify-between text-xs text-zinc-500">
+          <div className="mt-1 flex justify-between text-xs text-zinc-400">
             <span>{t("energy.drained")}</span>
             <span>{t("energy.wired")}</span>
           </div>
@@ -247,8 +268,8 @@ export default function Home() {
           <SectionLabel>{t("sections.bodySensation")}</SectionLabel>
           <ToggleGrid
             options={bodySensationOptions}
-            selected={bodySensations}
-            onToggle={(v) => toggle(bodySensations, setBodySensations, v)}
+            selected={bodySensation}
+            onToggle={(v) => select(bodySensation, setBodySensation, v)}
           />
         </section>
 
@@ -257,8 +278,8 @@ export default function Home() {
           <SectionLabel>{t("sections.socialDesire")}</SectionLabel>
           <ToggleGrid
             options={socialDesireOptions}
-            selected={socialDesires}
-            onToggle={(v) => toggle(socialDesires, setSocialDesires, v)}
+            selected={socialDesire}
+            onToggle={(v) => select(socialDesire, setSocialDesire, v)}
           />
         </section>
 
@@ -267,8 +288,8 @@ export default function Home() {
           <SectionLabel>{t("sections.timePerception")}</SectionLabel>
           <ToggleGrid
             options={timePerceptionOptions}
-            selected={timePerceptions}
-            onToggle={(v) => toggle(timePerceptions, setTimePerceptions, v)}
+            selected={timePerception}
+            onToggle={(v) => select(timePerception, setTimePerception, v)}
           />
         </section>
 
@@ -277,17 +298,20 @@ export default function Home() {
           <SectionLabel>{t("sections.emotionalWeather")}</SectionLabel>
           <ToggleGrid
             options={emotionalWeatherOptions}
-            selected={emotionalWeathers}
-            onToggle={(v) => toggle(emotionalWeathers, setEmotionalWeathers, v)}
+            selected={emotionalWeather}
+            onToggle={(v) => select(emotionalWeather, setEmotionalWeather, v)}
           />
         </section>
       </div>
 
+      {/* Fade overlay + button background */}
+      <div className="pointer-events-none fixed bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#d8d8d8] via-[#d8d8d8]/90 to-transparent z-20" />
+
       {/* Sticky Save button */}
-      <div className="fixed bottom-0 left-0 right-0 px-6 pb-6 pt-3">
+      <div className="fixed bottom-0 left-0 right-0 px-6 pb-6 pt-3 z-30">
         <button
           className="w-full rounded-full py-4 text-base font-semibold text-white transition-colors"
-          style={{ backgroundColor: activeColor, maxWidth: 400, display: "block", margin: "0 auto" }}
+          style={{ backgroundColor: activeColor, maxWidth: 400, display: "block", margin: "0 auto", boxShadow: `0 8px 24px 4px ${activeColor}99` }}
         >
           {t("saveMood")}
         </button>

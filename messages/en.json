@@ -3,9 +3,13 @@
     "title": "MoodMagnet",
     "description": "Take a moment to check in with yourself"
   },
+  "topic": {
+    "label": "Topic of discussion or question to raise",
+    "placeholder": "What's on your mind?"
+  },
   "heading": "How are you feeling?",
   "subtitle": "Take a moment to check in with yourself",
-  "saveMood": "Save my mood",
+  "saveMood": "Create conversation",
   "sections": {
     "mindState": "Mind State",
     "moodColor": "Mood Color",
