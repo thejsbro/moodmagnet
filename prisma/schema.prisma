@@ -6,3 +6,43 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model User {
+  id                  String         @id @default(cuid())
+  guestId             String?        @unique
+  email               String?        @unique
+  name                String?
+  createdAt           DateTime       @default(now())
+  hostedConversations Conversation[] @relation("host")
+  joinedConversations Conversation[] @relation("participants")
+  messages            Message[]
+}
+
+model Conversation {
+  id              String    @id @default(cuid())
+  createdAt       DateTime  @default(now())
+  hostId          String
+  host            User      @relation("host", fields: [hostId], references: [id])
+  participants    User[]    @relation("participants")
+  messages        Message[]
+
+  // Mood fields
+  topic           String?
+  mindState       String?
+  moodColor       String?
+  energyLevel     Int?
+  bodySensation   String?
+  socialDesire    String?
+  timePerception  String?
+  emotionalWeather String?
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  content        String
+  createdAt      DateTime     @default(now())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  authorId       String
+  author         User         @relation(fields: [authorId], references: [id])
+}

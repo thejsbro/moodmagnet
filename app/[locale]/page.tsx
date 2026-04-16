@@ -1,7 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+import { createConversation } from "@/actions/conversation";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -74,10 +76,10 @@ function ToggleButton({
   return (
     <button
       onClick={onClick}
-      className={`flex-1 rounded-full border py-3 text-sm font-semibold transition-all ${
+      className={`flex-1 rounded-full py-3 text-sm font-semibold transition-all ${
         selected
-          ? "border-transparent bg-zinc-800 text-white shadow-md"
-          : "border-transparent bg-white text-zinc-700 shadow-sm hover:shadow-md"
+          ? "bg-zinc-800 text-white shadow-md"
+          : "bg-white/40 text-zinc-500 hover:bg-white/70"
       }`}
     >
       {label}
@@ -120,6 +122,8 @@ function ToggleGrid({
 
 export default function Home() {
   const t = useTranslations();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const [topic, setTopic]                         = useState<string>("");
   const [mindState, setMindState]                 = useState<string | null>(null);
@@ -131,10 +135,6 @@ export default function Home() {
   const [emotionalWeather, setEmotionalWeather]   = useState<string | null>(null);
 
   const activeColor = MOOD_COLORS.find((c) => c.key === moodColor)?.hex ?? "#E8365D";
-
-  function select(current: string | null, set: (v: string | null) => void, value: string) {
-    set(current === value ? null : value);
-  }
 
   const mindStateOptions = MIND_STATE_KEYS.map((key) => ({
     key,
@@ -193,7 +193,7 @@ export default function Home() {
           <ToggleGrid
             options={mindStateOptions}
             selected={mindState}
-            onToggle={(v) => select(mindState, setMindState, v)}
+            onToggle={setMindState}
           />
         </section>
 
@@ -269,7 +269,7 @@ export default function Home() {
           <ToggleGrid
             options={bodySensationOptions}
             selected={bodySensation}
-            onToggle={(v) => select(bodySensation, setBodySensation, v)}
+            onToggle={setBodySensation}
           />
         </section>
 
@@ -279,7 +279,7 @@ export default function Home() {
           <ToggleGrid
             options={socialDesireOptions}
             selected={socialDesire}
-            onToggle={(v) => select(socialDesire, setSocialDesire, v)}
+            onToggle={setSocialDesire}
           />
         </section>
 
@@ -289,7 +289,7 @@ export default function Home() {
           <ToggleGrid
             options={timePerceptionOptions}
             selected={timePerception}
-            onToggle={(v) => select(timePerception, setTimePerception, v)}
+            onToggle={setTimePerception}
           />
         </section>
 
@@ -299,7 +299,7 @@ export default function Home() {
           <ToggleGrid
             options={emotionalWeatherOptions}
             selected={emotionalWeather}
-            onToggle={(v) => select(emotionalWeather, setEmotionalWeather, v)}
+            onToggle={setEmotionalWeather}
           />
         </section>
       </div>
@@ -310,10 +310,26 @@ export default function Home() {
       {/* Sticky Save button */}
       <div className="fixed bottom-0 left-0 right-0 px-6 pb-6 pt-3 z-30">
         <button
-          className="w-full rounded-full py-4 text-base font-semibold text-white transition-colors"
+          className="w-full rounded-full py-4 text-base font-semibold text-white transition-colors disabled:opacity-60"
           style={{ backgroundColor: activeColor, maxWidth: 400, display: "block", margin: "0 auto", boxShadow: `0 8px 24px 4px ${activeColor}99` }}
+          disabled={isPending}
+          onClick={() =>
+            startTransition(async () => {
+              const { conversationId } = await createConversation({
+                topic,
+                mindState,
+                moodColor,
+                energyLevel,
+                bodySensation,
+                socialDesire,
+                timePerception,
+                emotionalWeather,
+              });
+              router.push(`/conversation/${conversationId}`);
+            })
+          }
         >
-          {t("saveMood")}
+          {isPending ? "..." : t("saveMood")}
         </button>
       </div>
     </div>
